@@ -1,6 +1,7 @@
 package guru.springframework.spring5webfluxrest.bootstrap;
 
 import guru.springframework.spring5webfluxrest.domain.Category;
+import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.repositories.CategoryRepository;
 import guru.springframework.spring5webfluxrest.repositories.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -20,24 +21,48 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        loadCategories();
-        loadVendors();
-    }
+        if (categoryRepository.count().block() == 0) {
+            //load data
+            System.out.println("#### LOADING DATA ON BOOTSTRAP #####");
 
-    private void loadVendors() {
+            loadCategories();
+            loadVendors();
+
+        }
     }
 
     private void loadCategories() {
 
-        Category category1 = new Category();
-        category1.setDescription("Cat 1");
+        categoryRepository.save(Category.builder().description("Fruits").build()).block();
+        categoryRepository.save(Category.builder().description("Nuts").build()).block();
+        categoryRepository.save(Category.builder().description("Dried").build()).block();
 
-        Category category2 = new Category();
-        category2.setDescription("Cat 2");
-
-        categoryRepository.save(category1);
-        categoryRepository.save(category2);
-
-        System.out.println("Categories Loaded: " + categoryRepository.count());
+        System.out.println("Loaded Categories: " + categoryRepository.count().block());
     }
+
+    private void loadVendors() {
+
+            vendorRepository.save(Vendor.builder()
+                        .firstName("Joe")
+                        .lastName("Buck").build()).block();
+
+            vendorRepository.save(Vendor.builder()
+                    .firstName("Micheal")
+                    .lastName("Weston").build()).block();
+
+            vendorRepository.save(Vendor.builder()
+                    .firstName("Jessie")
+                    .lastName("Waters").build()).block();
+
+            vendorRepository.save(Vendor.builder()
+                    .firstName("Bill")
+                    .lastName("Nershi").build()).block();
+
+            vendorRepository.save(Vendor.builder()
+                    .firstName("Jimmy")
+                    .lastName("Buffett").build()).block();
+
+            System.out.println("Loaded Vendors: " + vendorRepository.count().block());
+
+        }
 }
